@@ -8,12 +8,10 @@ from psycopg2.extras import RealDictCursor
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app, origins='*', supports_credentials=True)
 
-DATABASE_URL = os.environ.get('DATABASE_URL', '')
-if DATABASE_URL.startswith('postgres://'):
-    DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
-
 def get_db():
-    db_url = os.environ.get('DATABASE_URL', DATABASE_URL)
+    db_url = os.environ.get('DATABASE_URL', '')
+    if not db_url:
+        raise Exception('DATABASE_URL not set')
     if db_url.startswith('postgres://'):
         db_url = db_url.replace('postgres://', 'postgresql://', 1)
     return psycopg2.connect(db_url, cursor_factory=RealDictCursor)
