@@ -13,7 +13,10 @@ if DATABASE_URL.startswith('postgres://'):
     DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
 
 def get_db():
-    return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+    db_url = os.environ.get('DATABASE_URL', DATABASE_URL)
+    if db_url.startswith('postgres://'):
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
+    return psycopg2.connect(db_url, cursor_factory=RealDictCursor)
 
 def hp(p): return hashlib.sha256(p.encode()).hexdigest()
 
